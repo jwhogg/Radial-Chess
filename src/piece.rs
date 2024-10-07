@@ -34,12 +34,6 @@ impl Not for Colour {
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 
-// pub struct Piece {
-//     pub piece_type: PieceType,
-//     pub colour: Colour,
-//     pub location: (usize, usize),
-// }
-
 pub enum Piece {
     King(Colour, Position),
     Queen(Colour, Position),
@@ -135,11 +129,23 @@ impl Piece {
             },
 
             Self::Queen(ally_colour, pos) => {
-                for p in &[
+                let up = {
+                    let mut max_travel = 0;
+                    for p in Position::orthogonals_to(&pos, Position::new(Board::SIZE as i32, pos.get_col())) {
+                        if board.has_no_piece(p) {
+                            max_travel += 1
+                        }
                     
-                ] {
+                        //allow move onto enemy piece but then break loop
+                        if board.has_enemy_piece(p, ally_colour) {
+                            max_travel += 1;
+                            break
+                        }
+                    }
+                    max_travel
+                };
 
-                }
+
             },
                 
         }

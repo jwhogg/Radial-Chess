@@ -1,4 +1,6 @@
-use crate::piece::{Colour};
+use std::cmp::max;
+
+use crate::{board::Board, piece::Colour};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Position {
@@ -183,6 +185,10 @@ impl Position {
         result
     }
 
+    /// Returns a vector of positions along the diagonal from `self` to `to`.
+    /// If the positions are not on the same diagonal, returns an empty vector.
+    /// Moves along the diagonal by determining the row and column steps 
+    /// (positive or negative) and accumulates the positions in between.
     pub fn diagonals_to(&self, to: Self) -> Vec<Self> {
         if !self.is_diagonal_to(to) {
             return Vec::new();
@@ -243,6 +249,57 @@ impl Position {
     pub fn is_knight_move(&self, other: Self) -> bool {
         (self.row - other.row).abs() == 2 && (self.col - other.col).abs() == 1
             || (self.row - other.row).abs() == 1 && (self.col - other.col).abs() == 2
+    }
+
+    //The max distance you can travel in a given direction up to and including a colision with an enemy piece
+    pub fn max_travel(board: Board, pos: Position, ally_colour: Colour, direction: &str) -> i32{
+        let to: Position = match direction {
+            "UP" => Position::new(Board::SIZE as i32, pos.get_col()),
+            "DOWN" => Position::new(0, pos.get_col()),
+            "LEFT" => Position::new(pos.get_row(), 0),
+            "RIGHT" => Position::new(pos.get_row(), Board::SIZE as i32),
+            "NE" => Position::new(pos.get_row(), Board::SIZE as i32),
+            "NW" => Position::new(Board::SIZE as i32, pos.get_col()),
+            "SE" => Position::new(Board::SIZE as i32, pos.get_col()),
+            "SW" => Position::new(Board::SIZE as i32, pos.get_col()),
+            _ => pos,
+        };
+
+        let mut max_travel = 0;
+        if pos.row == to.row || pos.col == to.col {
+            //orthogonal:
+            for p in Position::orthogonals_to(&pos, to) {
+                if board.has_no_piece(p) {
+                    max_travel += 1
+                }
+                //allow move onto enemy piece but then break loop
+                if board.has_enemy_piece(p, ally_colour) {
+                    max_travel += 1;
+                    break
+                }
+                if board.has_piece(p) {
+                    break
+                }
+            }
+        }
+        else if (pos.row - to.row).abs() == (pos.col - to.col).abs() {
+            //diagonal:
+            for p in Position::diagonals_to(&pos, to) {
+                if board.has_no_piece(p) {
+                    max_travel += 1
+                }
+                //allow move onto enemy piece but then break loop
+                if board.has_enemy_piece(p, ally_colour) {
+                    max_travel += 1;
+                    break
+                }
+                if board.has_piece(p) {
+                    break
+                }
+            }
+        }
+        max_travel
+
     }
     
 }
