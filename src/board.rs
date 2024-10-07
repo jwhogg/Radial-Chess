@@ -41,9 +41,9 @@ impl Board {
     }
 
     #[inline]
-    pub fn has_enemy_piece(&self, pos: Position, ally_color: Colour) -> bool {
+    pub fn has_enemy_piece(&self, pos: Position, ally_colour: Colour) -> bool {
         if let Some(piece) = self.get_piece(pos) {
-            piece.get_colour() == !ally_color
+            piece.get_colour() == !ally_colour
         } else {
             false
         }

@@ -66,6 +66,17 @@ impl Piece {
         }
     }
 
+    pub fn get_piece_type(&self) -> PieceType {
+        match self {
+            Piece::King(_,_) => PieceType::King,
+            Piece::Queen(_,_) => PieceType::Queen,
+            Piece::Rook(_,_) => PieceType::Rook,
+            Piece::Bishop(_,_) => PieceType::Bishop,
+            Piece::Knight(_,_) => PieceType::Knight,
+            Piece::Pawn(_,_) => PieceType::Pawn,
+        }
+    }
+
     pub fn get_colour(&self) -> Colour {
         match self {
             Piece::King(colour, _) => *colour,
@@ -155,13 +166,61 @@ impl Piece {
                     }
                 }
 
-
+                //TODO: Implement queen movement for horse
             },
-                
-        }
+
+            Self::Rook(ally_colour, pos) => {
+                for p in &[
+                    Position::max_travel(board, pos, ally_colour, "UP"),
+                    Position::max_travel(board, pos, ally_colour, "DOWN"),
+                    Position::max_travel(board, pos, ally_colour, "LEFT"),
+                    Position::max_travel(board, pos, ally_colour, "RIGHT"),
+                ] {
+                    for tile in Position::orthogonals_to(&pos, *p) {
+                        if p.is_on_board() && !board.has_friendly_piece(*p, ally_colour) {
+                            result.push(*p)
+                        }
+                    }
+                }
+            },
+
+            Self::Bishop(ally_colour, pos) => {
+                for p in &[
+                    Position::max_travel(board, pos, ally_colour, "NE"),
+                    Position::max_travel(board, pos, ally_colour, "NW"),
+                    Position::max_travel(board, pos, ally_colour, "SE"),
+                    Position::max_travel(board, pos, ally_colour, "SW"),
+                ] {
+                    for tile in Position::diagonals_to(&pos, *p) {
+                        if p.is_on_board() && !board.has_friendly_piece(*p, ally_colour) {
+                            result.push(*p)
+                        }
+                    }
+                }   
+            },
+            
+            Self::Knight(ally_colour, pos) => {
+                let potential_knight_moves = vec![
+                    Position::new(pos.get_row() + 2, pos.get_col() + 1), // Move 2 up, 1 right
+                    Position::new(pos.get_row() + 2, pos.get_col() - 1), // Move 2 up, 1 left
+                    Position::new(pos.get_row() - 2, pos.get_col() + 1), // Move 2 down, 1 right
+                    Position::new(pos.get_row() - 2, pos.get_col() - 1), // Move 2 down, 1 left
+                    Position::new(pos.get_row() + 1, pos.get_col() + 2), // Move 1 up, 2 right
+                    Position::new(pos.get_row() + 1, pos.get_col() - 2), // Move 1 up, 2 left
+                    Position::new(pos.get_row() - 1, pos.get_col() + 2), // Move 1 down, 2 right
+                    Position::new(pos.get_row() - 1, pos.get_col() - 2), // Move 1 down, 2 left
+                ];
+
+                for p in potential_knight_moves {
+                    if p.is_on_board() && !board.has_enemy_piece(p, ally_colour) {
+                        result.push(p);
+                    }
+                }
+            }
+        };
+
         result
     }
-
 }
 
 impl fmt::Display for PieceType {
@@ -180,7 +239,7 @@ impl fmt::Display for PieceType {
 impl fmt::Display for Piece {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 
-        let symbol = match (self.piece_type, self.colour) {
+        let symbol = match (self.get_piece_type(), self.get_colour()) {
             (PieceType::Pawn, Colour::White) => "♙",
             (PieceType::Pawn, Colour::Black) => "♟",
 
