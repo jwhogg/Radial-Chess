@@ -252,7 +252,7 @@ impl Position {
     }
 
     //The max distance you can travel in a given direction up to and including a colision with an enemy piece
-    pub fn max_travel(board: Board, pos: Position, ally_colour: Colour, direction: &str) -> i32{
+    pub fn max_travel(board: &Board, pos: Position, ally_colour: Colour, direction: &str) -> Position{
         let to: Position = match direction {
             "UP" => Position::new(Board::SIZE as i32, pos.get_col()),
             "DOWN" => Position::new(0, pos.get_col()),
@@ -298,7 +298,18 @@ impl Position {
                 }
             }
         }
-        max_travel
+        let max_travel_to: Position = match direction {
+            "UP" => Position::new(pos.get_row()+max_travel, pos.get_col()),
+            "DOWN" => Position::new(pos.get_row()-max_travel, pos.get_col()),
+            "LEFT" => Position::new(pos.get_row(), pos.get_col()-max_travel),
+            "RIGHT" => Position::new(pos.get_row(), pos.get_col()+max_travel),
+            "NE" => Position::new(pos.get_row()+max_travel, pos.get_col()+max_travel),
+            "NW" => Position::new(pos.get_row()+max_travel, pos.get_col()-max_travel),
+            "SE" => Position::new(pos.get_row()-max_travel, pos.get_col()+max_travel),
+            "SW" => Position::new(pos.get_row()-max_travel, pos.get_col()-max_travel),
+            _ => pos,
+        };
+        max_travel_to
 
     }
     

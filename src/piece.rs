@@ -129,21 +129,31 @@ impl Piece {
             },
 
             Self::Queen(ally_colour, pos) => {
-                let up = {
-                    let mut max_travel = 0;
-                    for p in Position::orthogonals_to(&pos, Position::new(Board::SIZE as i32, pos.get_col())) {
-                        if board.has_no_piece(p) {
-                            max_travel += 1
-                        }
-                    
-                        //allow move onto enemy piece but then break loop
-                        if board.has_enemy_piece(p, ally_colour) {
-                            max_travel += 1;
-                            break
+                for p in &[
+                    Position::max_travel(board, pos, ally_colour, "UP"),
+                    Position::max_travel(board, pos, ally_colour, "DOWN"),
+                    Position::max_travel(board, pos, ally_colour, "LEFT"),
+                    Position::max_travel(board, pos, ally_colour, "RIGHT"),
+                ] {
+                    for tile in Position::orthogonals_to(&pos, *p) {
+                        if p.is_on_board() && !board.has_friendly_piece(*p, ally_colour) {
+                            result.push(*p)
                         }
                     }
-                    max_travel
-                };
+                }
+
+                for p in &[
+                    Position::max_travel(board, pos, ally_colour, "NE"),
+                    Position::max_travel(board, pos, ally_colour, "NW"),
+                    Position::max_travel(board, pos, ally_colour, "SE"),
+                    Position::max_travel(board, pos, ally_colour, "SW"),
+                ] {
+                    for tile in Position::diagonals_to(&pos, *p) {
+                        if p.is_on_board() && !board.has_friendly_piece(*p, ally_colour) {
+                            result.push(*p)
+                        }
+                    }
+                }
 
 
             },
