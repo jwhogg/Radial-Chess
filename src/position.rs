@@ -119,8 +119,8 @@ impl Position {
     #[inline]
     pub fn pawn_up(&self, ally_color: Colour) -> Self {
         match ally_color {
-            Colour::White => self.next_above(),
-            Colour::Black => self.next_below(),
+            Colour::White => self.next_below(),
+            Colour::Black => self.next_above(),
         }
     }
 
