@@ -41,6 +41,7 @@ pub enum Piece {
     Bishop(Colour, Position),
     Knight(Colour, Position),
     Pawn(Colour, Position),
+    Captured(Colour), //todo: need to update the logic so captured peices keep the type they were but have no pos
 }
 
 impl Piece {
@@ -63,6 +64,7 @@ impl Piece {
             Piece::Bishop(_, pos) => *pos,
             Piece::Knight(_, pos) => *pos,
             Piece::Pawn(_, pos) => *pos,
+            Piece::Captured(_) => panic!("Trying to get Position of captured piece!"),
         }
     }
 
@@ -74,6 +76,7 @@ impl Piece {
             Piece::Bishop(_,_) => PieceType::Bishop,
             Piece::Knight(_,_) => PieceType::Knight,
             Piece::Pawn(_,_) => PieceType::Pawn,
+            Piece::Captured(_) => panic!("Trying to get Piece type of captured piece!"),
         }
     }
 
@@ -85,6 +88,35 @@ impl Piece {
             Piece::Bishop(colour, _) => *colour,
             Piece::Knight(colour, _) => *colour,
             Piece::Pawn(colour, _) => *colour,
+            Piece::Captured(_) => panic!("Trying to get Colour of captured piece!"),
+        }
+    }
+
+    pub fn set_captured(&mut self) {
+        let colour = match self {
+            Piece::King(col, _) |
+            Piece::Queen(col, _) |
+            Piece::Rook(col, _) |
+            Piece::Bishop(col, _) |
+            Piece::Knight(col, _) |
+            Piece::Pawn(col, _) => *col,
+
+            Piece::Captured(col) => {
+                return;
+            }
+        };
+        *self = Piece::Captured(colour);
+    }
+
+    pub fn set_pos(&mut self, new_pos: Position) {
+        match self {
+            Piece::King(_, pos) => *pos = new_pos,
+            Piece::Queen(_, pos) => *pos = new_pos,
+            Piece::Rook(_, pos) => *pos = new_pos,
+            Piece::Bishop(_, pos) => *pos = new_pos,
+            Piece::Knight(_, pos) => *pos = new_pos,
+            Piece::Pawn(_, pos) => *pos = new_pos,
+            Piece::Captured(_) => panic!("Captured pieces cannot have their position set"),
         }
     }
 
@@ -216,7 +248,9 @@ impl Piece {
                         result.push(p);
                     }
                 }
-            }
+            },
+
+            Self::Captured(_) => panic!("Caputed piece has no legal moves")
         };
 
         result

@@ -57,12 +57,21 @@ impl Board {
         }
     }
 
-    // pub fn move_piece(piece: Piece, to: (usize,usize)) {
-    //     //check it is in the valid move set for that peice
-    //     //check if there is a piece on that location
-    //     //update the location of relevant pieces
-    //     //update the board tile (make it empty where there is no longer a piece)
-    // }
+    pub fn move_piece(mut self, mut piece: Piece, to: Position, ally_colour: Colour) -> Board {
+        //TODO: clear the old location
+        let row= to.get_row();
+        let col = to.get_col();
+        if piece.legal_moves(&self).contains(&to) {
+            if self.has_enemy_piece(to, ally_colour) {
+                self.get_piece( to).unwrap().set_captured();
+            }
+            self.grid[piece.get_pos().get_row() as usize][piece.get_pos().get_col() as usize] = None;
+
+            piece.set_pos(Position::new(row,col));
+            self.grid[row as usize][col as usize] = Some(piece);
+        }
+        return self
+    }
 
     pub fn new() -> Self {
         let mut board = Board {
@@ -108,12 +117,12 @@ impl Board {
     }
 
     pub fn display(&self) {
-        for row in self.grid {
-            for (idx, tile) in row.iter().enumerate() {
+        for (row_idx, row) in self.grid.iter().enumerate() {
+            for (col_idx, tile) in row.iter().enumerate() {
                 match tile {
                     Some(piece) => print!("{}", piece),
                     None => print!("{}", 
-                        if idx % 2 != 0 {"■"}
+                        if (row_idx + col_idx) % 2 != 0 {"■"}
                         else {"□"}
                     )
                 }
