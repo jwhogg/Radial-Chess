@@ -2,6 +2,150 @@ use std::cmp::max;
 
 use crate::{board::Board, piece::Colour};
 
+
+pub const A1: Position = Position::new(0, 0);
+pub const A2: Position = Position::new(1, 0);
+pub const A3: Position = Position::new(2, 0);
+pub const A4: Position = Position::new(3, 0);
+pub const A5: Position = Position::new(4, 0);
+pub const A6: Position = Position::new(5, 0);
+pub const A7: Position = Position::new(6, 0);
+pub const A8: Position = Position::new(7, 0);
+
+pub const B1: Position = Position::new(0, 1);
+pub const B2: Position = Position::new(1, 1);
+pub const B3: Position = Position::new(2, 1);
+pub const B4: Position = Position::new(3, 1);
+pub const B5: Position = Position::new(4, 1);
+pub const B6: Position = Position::new(5, 1);
+pub const B7: Position = Position::new(6, 1);
+pub const B8: Position = Position::new(7, 1);
+
+pub const C1: Position = Position::new(0, 2);
+pub const C2: Position = Position::new(1, 2);
+pub const C3: Position = Position::new(2, 2);
+pub const C4: Position = Position::new(3, 2);
+pub const C5: Position = Position::new(4, 2);
+pub const C6: Position = Position::new(5, 2);
+pub const C7: Position = Position::new(6, 2);
+pub const C8: Position = Position::new(7, 2);
+
+pub const D1: Position = Position::new(0, 3);
+pub const D2: Position = Position::new(1, 3);
+pub const D3: Position = Position::new(2, 3);
+pub const D4: Position = Position::new(3, 3);
+pub const D5: Position = Position::new(4, 3);
+pub const D6: Position = Position::new(5, 3);
+pub const D7: Position = Position::new(6, 3);
+pub const D8: Position = Position::new(7, 3);
+
+pub const E1: Position = Position::new(0, 4);
+pub const E2: Position = Position::new(1, 4);
+pub const E3: Position = Position::new(2, 4);
+pub const E4: Position = Position::new(3, 4);
+pub const E5: Position = Position::new(4, 4);
+pub const E6: Position = Position::new(5, 4);
+pub const E7: Position = Position::new(6, 4);
+pub const E8: Position = Position::new(7, 4);
+
+pub const F1: Position = Position::new(0, 5);
+pub const F2: Position = Position::new(1, 5);
+pub const F3: Position = Position::new(2, 5);
+pub const F4: Position = Position::new(3, 5);
+pub const F5: Position = Position::new(4, 5);
+pub const F6: Position = Position::new(5, 5);
+pub const F7: Position = Position::new(6, 5);
+pub const F8: Position = Position::new(7, 5);
+
+pub const G1: Position = Position::new(0, 6);
+pub const G2: Position = Position::new(1, 6);
+pub const G3: Position = Position::new(2, 6);
+pub const G4: Position = Position::new(3, 6);
+pub const G5: Position = Position::new(4, 6);
+pub const G6: Position = Position::new(5, 6);
+pub const G7: Position = Position::new(6, 6);
+pub const G8: Position = Position::new(7, 6);
+
+pub const H1: Position = Position::new(0, 7);
+pub const H2: Position = Position::new(1, 7);
+pub const H3: Position = Position::new(2, 7);
+pub const H4: Position = Position::new(3, 7);
+pub const H5: Position = Position::new(4, 7);
+pub const H6: Position = Position::new(5, 7);
+pub const H7: Position = Position::new(6, 7);
+pub const H8: Position = Position::new(7, 7);
+
+pub fn interpret_position(input: &str) -> Option<Position> {
+    match input {
+        "A1" => Some(A1),
+        "A2" => Some(A2),
+        "A3" => Some(A3),
+        "A4" => Some(A4),
+        "A5" => Some(A5),
+        "A6" => Some(A6),
+        "A7" => Some(A7),
+        "A8" => Some(A8),
+        "B1" => Some(B1),
+        "B2" => Some(B2),
+        "B3" => Some(B3),
+        "B4" => Some(B4),
+        "B5" => Some(B5),
+        "B6" => Some(B6),
+        "B7" => Some(B7),
+        "B8" => Some(B8),
+        "C1" => Some(C1),
+        "C2" => Some(C2),
+        "C3" => Some(C3),
+        "C4" => Some(C4),
+        "C5" => Some(C5),
+        "C6" => Some(C6),
+        "C7" => Some(C7),
+        "C8" => Some(C8),
+        "D1" => Some(D1),
+        "D2" => Some(D2),
+        "D3" => Some(D3),
+        "D4" => Some(D4),
+        "D5" => Some(D5),
+        "D6" => Some(D6),
+        "D7" => Some(D7),
+        "D8" => Some(D8),
+        "E1" => Some(E1),
+        "E2" => Some(E2),
+        "E3" => Some(E3),
+        "E4" => Some(E4),
+        "E5" => Some(E5),
+        "E6" => Some(E6),
+        "E7" => Some(E7),
+        "E8" => Some(E8),
+        "F1" => Some(F1),
+        "F2" => Some(F2),
+        "F3" => Some(F3),
+        "F4" => Some(F4),
+        "F5" => Some(F5),
+        "F6" => Some(F6),
+        "F7" => Some(F7),
+        "F8" => Some(F8),
+        "G1" => Some(G1),
+        "G2" => Some(G2),
+        "G3" => Some(G3),
+        "G4" => Some(G4),
+        "G5" => Some(G5),
+        "G6" => Some(G6),
+        "G7" => Some(G7),
+        "G8" => Some(G8),
+        "H1" => Some(H1),
+        "H2" => Some(H2),
+        "H3" => Some(H3),
+        "H4" => Some(H4),
+        "H5" => Some(H5),
+        "H6" => Some(H6),
+        "H7" => Some(H7),
+        "H8" => Some(H8),
+        _ => None, // Return None for invalid inputs
+    }
+}
+
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Position {
     row: i32,
